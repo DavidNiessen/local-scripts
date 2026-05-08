@@ -1,6 +1,44 @@
-res# Local Scripts Collection
+# Local Scripts Collection
 
 A collection of utility scripts for managing local development environment and IntelliJ IDEA projects.
+
+## Installation
+
+### Quick Install (Recommended)
+
+Run the installer to make all scripts available globally:
+
+```bash
+./install.sh
+```
+
+This will:
+- Create `~/.local/bin` if it doesn't exist
+- Symlink all scripts to `~/.local/bin`
+- Optionally add `~/.local/bin` to your PATH
+- Allow you to run scripts from anywhere without the `.sh` extension
+
+After installation, you can run scripts from anywhere:
+```bash
+global-claude-code-model.sh claude-opus-4-7
+reset-project-workspaces.sh --dry-run
+```
+
+### Uninstall
+
+To remove all installed scripts:
+```bash
+./install.sh --uninstall
+```
+
+### Manual Installation
+
+Alternatively, you can manually add the scripts directory to your PATH:
+
+```bash
+# Add to ~/.zshrc or ~/.bashrc
+export PATH="$PATH:/Users/username/IdeaProjects/private/local-scripts/scripts"
+```
 
 ## Scripts
 
@@ -123,44 +161,6 @@ Total workspace.xml files found: 3
 Successfully deleted: 3
 
 ✓ All workspace files successfully deleted!
-```
-
-## Installation
-
-### Quick Install (Recommended)
-
-Run the installer to make all scripts available globally:
-
-```bash
-./install.sh
-```
-
-This will:
-- Create `~/.local/bin` if it doesn't exist
-- Symlink all scripts to `~/.local/bin`
-- Optionally add `~/.local/bin` to your PATH
-- Allow you to run scripts from anywhere without the `.sh` extension
-
-After installation, you can run scripts from anywhere:
-```bash
-global-claude-code-model.sh claude-opus-4-7
-reset-project-workspaces.sh --dry-run
-```
-
-### Uninstall
-
-To remove all installed scripts:
-```bash
-./install.sh --uninstall
-```
-
-### Manual Installation
-
-Alternatively, you can manually add the scripts directory to your PATH:
-
-```bash
-# Add to ~/.zshrc or ~/.bashrc
-export PATH="$PATH:/Users/username/IdeaProjects/private/local-scripts/scripts"
 ```
 
 ## Requirements
