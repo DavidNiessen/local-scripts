@@ -4,6 +4,50 @@ A collection of utility scripts for managing local development environment and I
 
 ## Scripts
 
+### global-claude-code-model.sh
+
+Sets the Claude Code model globally by configuring the `ANTHROPIC_MODEL` environment variable in your shell configuration file.
+
+#### Features
+
+- **Cross-platform**: Works on both Linux and macOS
+- **Auto-detection**: Automatically detects shell type (bash/zsh) and config file
+- **Safe updates**: Creates backup before modifying existing configuration
+- **Clear instructions**: Provides step-by-step guidance for applying changes
+
+#### Usage
+
+```bash
+# Set model globally
+./scripts/global-claude-code-model.sh claude-opus-4-7
+
+# Other examples
+./scripts/global-claude-code-model.sh claude-sonnet-4-6
+./scripts/global-claude-code-model.sh claude-haiku-4-5-20251001
+```
+
+#### What it does
+
+1. Detects your shell (bash or zsh)
+2. Adds or updates `export ANTHROPIC_MODEL="<model-name>"` in your shell config file (~/.zshrc or ~/.bashrc)
+3. Creates a backup of your config file before making changes
+4. Provides instructions for applying the changes
+
+#### After running
+
+```bash
+# Apply changes immediately
+source ~/.zshrc  # or ~/.bashrc for bash
+
+# Then close and reopen your terminal
+
+# Verify the setting
+echo $ANTHROPIC_MODEL
+
+# Or check in Claude Code
+/status
+```
+
 ### reset-project-workspaces.sh
 
 Finds and deletes all `workspace.xml` files in IntelliJ IDEA projects. This is useful for cleaning up workspace-specific settings that can cause issues or conflicts when sharing projects or switching between different development environments.
@@ -83,18 +127,37 @@ Successfully deleted: 3
 
 ## Installation
 
-1. Clone this repository:
+### Quick Install (Recommended)
+
+Run the installer to make all scripts available globally:
+
 ```bash
-git clone <repository-url>
-cd local-scripts
+./install.sh
 ```
 
-2. Make scripts executable:
+This will:
+- Create `~/.local/bin` if it doesn't exist
+- Symlink all scripts to `~/.local/bin`
+- Optionally add `~/.local/bin` to your PATH
+- Allow you to run scripts from anywhere without the `.sh` extension
+
+After installation, you can run scripts from anywhere:
 ```bash
-chmod +x scripts/*.sh
+global-claude-code-model.sh claude-opus-4-7
+reset-project-workspaces.sh --dry-run
 ```
 
-3. (Optional) Add scripts to your PATH:
+### Uninstall
+
+To remove all installed scripts:
+```bash
+./install.sh --uninstall
+```
+
+### Manual Installation
+
+Alternatively, you can manually add the scripts directory to your PATH:
+
 ```bash
 # Add to ~/.zshrc or ~/.bashrc
 export PATH="$PATH:/Users/username/IdeaProjects/private/local-scripts/scripts"
