@@ -1,4 +1,4 @@
-# Local Scripts Collection
+## Local Scripts Collection
 
 A collection of utility scripts for managing local development environments, audio plugin paths, audio file metadata, and IntelliJ IDEA projects.
 
@@ -97,9 +97,13 @@ echo $ANTHROPIC_MODEL
 
 Renames audio files in a folder using the track title stored in their metadata tags.
 
+Optionally, the script can rebuild FLAC files containing embedded artwork to repair malformed metadata blocks that may cause issues in some DJ software.
+
 #### Features
 
 * **Metadata-driven**: Reads the `title` tag via `ffprobe` (supports mp3, flac, aiff, wav)
+* **Optional FLAC repair**: Can rebuild FLAC metadata and recreate embedded artwork blocks
+* **Single file or folder support**: Process either an individual audio file or an entire folder
 * **Review before rename**: Displays a full preview of all proposed renames and requires explicit approval
 * **Conflict detection**: Warns if two files would be renamed to the same name, or if a rename would overwrite an existing file
 * **Safe filenames**: Strips characters that are invalid on Windows (`\ / : * ? " < > |`)
@@ -107,7 +111,7 @@ Renames audio files in a folder using the track title stored in their metadata t
 
 #### Requirements
 
-`ffprobe`, which ships with [ffmpeg](https://ffmpeg.org/download.html):
+Both `ffprobe` and `ffmpeg`, which ship with FFmpeg:
 
 ```bash
 # macOS
@@ -123,34 +127,66 @@ apt install ffmpeg
 #### Usage
 
 ```bash
-# Run and follow the prompts
+# Prompt for file/folder and whether to repair FLAC metadata
 normalize-audio-files.sh
+
+# Process a folder without prompts
+normalize-audio-files.sh "/Volumes/Music/Albums"
+
+# Process a single file without prompts
+normalize-audio-files.sh "/Volumes/Music/track.flac"
+
+# Process and also repair FLAC artwork metadata
+normalize-audio-files.sh "/Volumes/Music/Albums" --repair
+
+# Short form
+normalize-audio-files.sh "/Volumes/Music/Albums" -r
 ```
 
 #### Example session
 
 ```text
-Folder to scan (press Enter for current directory): /Volumes/Music/Albums/Daft Punk
+Folder or file to scan (Enter = current directory): /Volumes/Music/Albums/Daft Punk
+Repair FLAC artwork metadata? [y/N] y
 
-Scanning: /Volumes/Music/Albums/Daft Punk
+Scanning folder: /Volumes/Music/Albums/Daft Punk
+FLAC artwork repair: true
 
 Proposed renames:
-─────────────────────────────────────────────────────────────────────
-  track01.mp3                              →  One More Time.mp3
-  track02.mp3                              →  Aerodynamic.mp3
-  track03.flac                             →  Digital Love.flac
+------------------------------------------------------------
+  track01.mp3                        -> One More Time.mp3
+  track02.mp3                        -> Aerodynamic.mp3
+  track03.flac                       -> Digital Love.flac
 
 Skipped:
   already correct     : Harder Better Faster Stronger.mp3
 
 Apply 3 rename(s)? [y/N] y
 
-  OK      track01.mp3                      →  One More Time.mp3
-  OK      track02.mp3                      →  Aerodynamic.mp3
-  OK      track03.flac                     →  Digital Love.flac
+  OK      track01.mp3               -> One More Time.mp3
+  OK      track02.mp3               -> Aerodynamic.mp3
+  OK      track03.flac              -> Digital Love.flac
 
 Done. 3 file(s) renamed.
 ```
+
+#### FLAC Metadata Repair
+
+When enabled, the script:
+
+1. Detects FLAC files containing embedded artwork.
+2. Extracts the artwork.
+3. Rebuilds the FLAC file.
+4. Re-embeds the artwork.
+
+This can repair malformed FLAC metadata blocks that cause errors in some DJ applications.
+
+The repair step:
+
+* Only affects `.flac` files
+* Preserves audio quality (FLAC is lossless)
+* Preserves standard metadata tags such as title, artist, album, and date
+* Is only performed when explicitly enabled
 
 ---
 
@@ -311,7 +347,7 @@ These settings are user-specific and can cause issues when:
 
 ```text
 ╔════════════════════════════════════════════════════════════╗
-║  IntelliJ IDEA Workspace Reset Tool                       ║
+║  IntelliJ IDEA Workspace Reset Tool                      ║
 ╚════════════════════════════════════════════════════════════╝
 
 Scanning directory: /Users/username/IdeaProjects
@@ -324,7 +360,7 @@ Searching for workspace.xml files...
 [DELETED] personal/demo-app/.idea/workspace.xml
 
 ╔════════════════════════════════════════════════════════════╗
-║  Summary                                                   ║
+║  Summary                                                  ║
 ╚════════════════════════════════════════════════════════════╝
 
 Total workspace.xml files found: 3
@@ -338,7 +374,7 @@ Successfully deleted: 3
 * macOS, Linux, or Windows
 * Bash 4.0+
 * Git Bash, MSYS2, or Cygwin (Windows only)
-* `ffprobe` / ffmpeg — required by `normalize-audio-files.sh`
+* `ffprobe` / `ffmpeg` — required by `normalize-audio-files.sh`
 * Administrator privileges on macOS and Windows when modifying system-wide VST3 directories
 * IntelliJ IDEA projects in `~/IdeaProjects` directory (for `reset-project-workspaces.sh`)
 
