@@ -16,7 +16,7 @@
 #       Process file/folder without prompting. No FLAC repair.
 #
 #   ./normalize-audio-files.sh "/music" --repair
-#   ./normalize-audio-files.sh "/music" --r
+#   ./normalize-audio-files.sh "/music" -r
 #       Process file/folder and repair FLAC artwork.
 
 set -u
@@ -62,7 +62,7 @@ case $# in
         input="${input//\\//}"
 
         case "$2" in
-            --repair|--r)
+            --repair|-r)
                 repair_flac=true
                 ;;
             *)
@@ -70,7 +70,7 @@ case $# in
                 echo "  ./normalize-audio-files.sh"
                 echo "  ./normalize-audio-files.sh <file-or-folder>"
                 echo "  ./normalize-audio-files.sh <file-or-folder> --repair"
-                echo "  ./normalize-audio-files.sh <file-or-folder> --r"
+                echo "  ./normalize-audio-files.sh <file-or-folder> -r"
                 exit 1
                 ;;
         esac
@@ -81,7 +81,7 @@ case $# in
         echo "  ./normalize-audio-files.sh"
         echo "  ./normalize-audio-files.sh <file-or-folder>"
         echo "  ./normalize-audio-files.sh <file-or-folder> --repair"
-        echo "  ./normalize-audio-files.sh <file-or-folder> --r"
+        echo "  ./normalize-audio-files.sh <file-or-folder> -r"
         exit 1
         ;;
 esac
