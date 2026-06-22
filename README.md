@@ -1,6 +1,6 @@
 # Local Scripts Collection
 
-A collection of utility scripts for managing local development environments, audio plugin paths, and IntelliJ IDEA projects.
+A collection of utility scripts for managing local development environments, audio plugin paths, audio file metadata, and IntelliJ IDEA projects.
 
 ## Installation
 
@@ -23,6 +23,7 @@ After installation, you can run scripts from anywhere:
 
 ```bash
 global-claude-code-model.sh claude-opus-4-7
+normalize-audio-files.sh
 reset-project-workspaces.sh --dry-run
 setup-vst3-redirect.sh
 ```
@@ -88,6 +89,67 @@ echo $ANTHROPIC_MODEL
 
 # Or check in Claude Code
 /status
+```
+
+---
+
+### normalize-audio-files.sh
+
+Renames audio files in a folder using the track title stored in their metadata tags.
+
+#### Features
+
+* **Metadata-driven**: Reads the `title` tag via `ffprobe` (supports mp3, flac, aiff, wav)
+* **Review before rename**: Displays a full preview of all proposed renames and requires explicit approval
+* **Conflict detection**: Warns if two files would be renamed to the same name, or if a rename would overwrite an existing file
+* **Safe filenames**: Strips characters that are invalid on Windows (`\ / : * ? " < > |`)
+* **Cross-platform**: Works on macOS, Linux, and Windows (Git Bash)
+
+#### Requirements
+
+`ffprobe`, which ships with [ffmpeg](https://ffmpeg.org/download.html):
+
+```bash
+# macOS
+brew install ffmpeg
+
+# Windows
+winget install ffmpeg
+
+# Debian/Ubuntu
+apt install ffmpeg
+```
+
+#### Usage
+
+```bash
+# Run and follow the prompts
+normalize-audio-files.sh
+```
+
+#### Example session
+
+```text
+Folder to scan (press Enter for current directory): /Volumes/Music/Albums/Daft Punk
+
+Scanning: /Volumes/Music/Albums/Daft Punk
+
+Proposed renames:
+─────────────────────────────────────────────────────────────────────
+  track01.mp3                              →  One More Time.mp3
+  track02.mp3                              →  Aerodynamic.mp3
+  track03.flac                             →  Digital Love.flac
+
+Skipped:
+  already correct     : Harder Better Faster Stronger.mp3
+
+Apply 3 rename(s)? [y/N] y
+
+  OK      track01.mp3                      →  One More Time.mp3
+  OK      track02.mp3                      →  Aerodynamic.mp3
+  OK      track03.flac                     →  Digital Love.flac
+
+Done. 3 file(s) renamed.
 ```
 
 ---
@@ -276,6 +338,7 @@ Successfully deleted: 3
 * macOS, Linux, or Windows
 * Bash 4.0+
 * Git Bash, MSYS2, or Cygwin (Windows only)
+* `ffprobe` / ffmpeg — required by `normalize-audio-files.sh`
 * Administrator privileges on macOS and Windows when modifying system-wide VST3 directories
 * IntelliJ IDEA projects in `~/IdeaProjects` directory (for `reset-project-workspaces.sh`)
 
